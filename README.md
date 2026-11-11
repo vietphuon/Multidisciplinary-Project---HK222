@@ -52,7 +52,7 @@ The TF tree on the real robot, 6 June 2023: `odom -> base_footprint -> base_link
 | size | wheel radius 3.3 cm, wheel track about 0.15 m, top speed about 0.71 m/s |
 | power | a 10,000 mAh power bank |
 
-![chassis](assets/chassis.jpg)
+![the finished car with the LD19 on top, 26 May 2023](assets/car.jpg) ![the chassis with the Pi 4 and the motor HAT](assets/chassis.jpg)
 
 ## files of the repo
 
