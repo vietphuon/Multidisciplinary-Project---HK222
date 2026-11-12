@@ -10,17 +10,27 @@ This is a fork of [Quoc1610/Multidisciplinary-Project---HK222](https://github.co
 
 ## videos
 
-| | clip | what it shows |
-|---|---|---|
-| real car | [slam-real-room-31may.mp4](assets/videos/slam-real-room-31may.mp4) (40 s) | first SLAM run in a real home: the car on the floor, the map growing in RViz |
-| real car | [gmapping-11jun.mp4](assets/videos/gmapping-11jun.mp4) (1:42) | screen recording: gmapping of the whole home |
-| real car | [amcl-localization-11jun.mp4](assets/videos/amcl-localization-11jun.mp4) (1:28) | screen recording: the AMCL particle cloud converging on the saved map |
-| simulation | [sim-goal-navigation-2may.mp4](assets/videos/sim-goal-navigation-2may.mp4) (55 s) | RViz: set the start pose, click a goal, move_base drives there |
-| simulation | [sim-obstacle-avoidance-2may.mp4](assets/videos/sim-obstacle-avoidance-2may.mp4) (26 s) | obstacle avoidance with our own code on top of AMCL |
+**Real car, 31 May 2023 (40 s).** The first SLAM run in a real home: the car on the floor, and the map growing live in RViz.
 
-![AMCL localization on the real map, 11 June 2023 (4x speed)](assets/amcl-localization-11jun.gif)
+https://github.com/user-attachments/assets/c437c4fb-16fb-42c2-aaeb-af2eb864be6e
 
-AMCL on the real car, 11 June 2023. The red arrows are the particles. They start spread over the whole map and collapse onto the car's pose as it drives.
+**Real car, 11 June 2023 (1:42).** Screen recording: gmapping of the whole home.
+
+https://github.com/user-attachments/assets/6bcce406-377d-42bd-91e8-38ab99017653
+
+**Real car, 11 June 2023 (1:28).** Screen recording: the AMCL particle cloud converging on the saved map.
+
+https://github.com/user-attachments/assets/4e3fcb1e-cb3f-4696-a302-cf12f611de0b
+
+**Simulation, 2 May 2023 (55 s).** RViz: set the start pose, click a goal, and move_base drives there.
+
+https://github.com/user-attachments/assets/90d085d8-1d82-41bd-a2c9-a9c433932256
+
+**Simulation, 2 May 2023 (26 s).** Obstacle avoidance with our own code on top of AMCL.
+
+https://github.com/user-attachments/assets/dd295810-6b95-4230-afa0-49415f63548f
+
+The same files are in [assets/videos](assets/videos).
 
 ## how it fits together
 
