@@ -2,15 +2,15 @@
 
 ![the car mapping a real home, 31 May 2023 (2x speed)](assets/slam-real-room-31may.gif)
 
-A small ROS 1 robot car, built by a team of 4 students for the Multidisciplinary Project (HK222 semester, Jan to Jun 2023) at Ho Chi Minh City University of Technology. A Raspberry Pi 4 turns `/cmd_vel` into motor PWM, counts wheel ticks into `/odom`, and publishes `/scan` from an LD19 2D LiDAR. A laptop on the same ROS master runs RViz, gmapping, an EKF, AMCL and move_base. The real car mapped a multi-room home with SLAM, localized itself in that map with AMCL, and drove to goals in it on its own. The clip above is the first mapping run, 31 May 2023: the car on the floor, and the map growing live on the laptop. The project was graded 9.5/10.
+A small ROS 1 robot car, built by a team of 4 students for the Multidisciplinary Project (HK222 semester, Jan to Jun 2023) at Ho Chi Minh City University of Technology. A Raspberry Pi 4 turns `/cmd_vel` into motor PWM, counts wheel ticks into `/odom`, and publishes `/scan` from an LD19 2D LiDAR. A laptop on the same ROS master runs RViz, gmapping, an EKF, AMCL and move_base. The real car mapped a multi-room home with SLAM and localized itself in that map with AMCL. Autonomous goal navigation worked in simulation, but on the real car it was our main limitation: small heading errors from a cheap IMU added up every second, the pose drifted, and the car missed its goals (see [the limitation](#the-limitation-imu-drift-and-goal-navigation)). The clip above is the first mapping run, 31 May 2023: the car on the floor, and the map growing live on the laptop. The project was graded 9.5/10.
 
-The plan started as "plan B". We wanted to borrow a TurtleBot3, that did not work out, so we rebuilt a TurtleBot3-Burger-like robot ourselves from a borrowed Pi 4, a borrowed LD19 and cheap parts. Our instructor's first question was a good one: a TurtleBot3 already has a LiDAR, so what will you add?
+The plan started as "plan B". We wanted to borrow a TurtleBot3. That did not work out, so we rebuilt a TurtleBot3-Burger-like robot ourselves from a borrowed Pi 4, a borrowed LD19 and cheap parts. Our instructor's first question was a good one: a TurtleBot3 already has a LiDAR, so what will you add?
 
-This is a fork of [Quoc1610/Multidisciplinary-Project---HK222](https://github.com/Quoc1610/Multidisciplinary-Project---HK222) at its 7 June 2023 snapshot. The code is unchanged. This README, `assets/` and `docs/` were added later. The commits were pushed by two teammates, Quốc ([Quoc1610](https://github.com/Quoc1610)) and Bảo ([DerpLEL](https://github.com/DerpLEL)), but the work was shared across the team, and I led it (see [team](#team)). The IMU and EKF work from the last week (8 to 11 June) was never pushed, so this snapshot does not have it (see [the IMU](#the-imu-and-why-the-pose-drifted)).
+This is a fork of [Quoc1610/Multidisciplinary-Project---HK222](https://github.com/Quoc1610/Multidisciplinary-Project---HK222) at its 7 June 2023 snapshot. The code is unchanged. This README, `assets/` and `docs/` were added later. The commits were pushed by two teammates, Quốc ([Quoc1610](https://github.com/Quoc1610)) and Bảo ([DerpLEL](https://github.com/DerpLEL)), but the work was shared across the team, and I led it (see [team](#team)). The IMU and EKF work from the last week (8 to 11 June) was never pushed, so this snapshot does not have it (see [the limitation](#the-limitation-imu-drift-and-goal-navigation)).
 
 ## videos
 
-**Real car, 31 May 2023 (40 s).** The first SLAM run in a real home: the car on the floor, and the map growing live in RViz.
+**Real car, 31 May 2023 (41 s).** The first SLAM run in a real home: the car on the floor, and the map growing live in RViz.
 
 https://github.com/user-attachments/assets/c437c4fb-16fb-42c2-aaeb-af2eb864be6e
 
@@ -108,20 +108,20 @@ Timeline on the real car:
 - 15 May: first drive from `/cmd_vel`, still tethered. 23 May: keyboard drive.
 - 31 May: first SLAM map of a real home.
 - 6 June: wheel odometry and the full TF tree.
-- 10 to 11 June: IMU on an Arduino Mega, EKF fusion, gmapping of the whole home, AMCL localization in the saved map, and autonomous goal runs with move_base in that map.
+- 10 to 11 June: IMU on an Arduino Mega, EKF fusion, gmapping of the whole home, AMCL localization in the saved map, and the first autonomous goal runs with move_base in that map. The goal runs did not reach their targets reliably, and we have no recording of them.
 - 14 June: defense.
 
 Before the hardware was ready, goal navigation and obstacle avoidance were tuned in Gazebo and RViz (clips recorded 2 May).
 
 We dropped camera obstacle detection early. We started training a YOLOv3 (Darknet) model on Colab, then chose LiDAR-based avoidance: for a 2D LiDAR robot it was enough, and object detection was overkill for our deadline.
 
-## the IMU, and why the pose drifted
+## the limitation: IMU drift and goal navigation
 
 The hardware changed late. On 8 June the IMU code was not in yet. On 9 June we bought an Arduino Mega with more memory to run the IMU next to the encoders, and on 10 June I wired the MPU6050 and the encoders to it. On 11 June the EKF ran in the stack, fusing the wheel odometry with the IMU, under AMCL and move_base. That code lived on the Pi and the laptop and was never pushed, which is why `ekf_localization.yaml` in this snapshot still has the IMU lines commented out.
 
-It worked, with one clear limit: heading drift from gyro bias. The MPU6050 is a low-cost consumer MEMS IMU with no magnetometer, so the only way to get yaw is to integrate the gyro rate. Any small bias in that rate is integrated too, so the heading error grows every second the car runs. This is the standard failure of gyro-only heading in dead reckoning, and robotics texts describe it with two numbers: bias instability (slow drift of the bias, in °/h) and angle random walk (integrated noise). Cheap MEMS gyros sit at the poor end of both. The MPU6050 bias also moves with temperature.
+Mapping and localization worked. Autonomous goal navigation on the real car did not work reliably, and the main cause was heading drift from gyro bias. The MPU6050 is a low-cost consumer MEMS IMU with no magnetometer, so the only way to get yaw is to integrate the gyro rate. Any small bias in that rate is integrated too: each second adds a small error, and the heading error grows the longer the car runs. This is the standard failure of gyro-only heading in dead reckoning, and robotics texts describe it with two numbers: bias instability (slow drift of the bias, in °/h) and angle random walk (integrated noise). Cheap MEMS gyros sit at the poor end of both. The MPU6050 bias also moves with temperature.
 
-On our car the drift showed up after about 10 seconds of driving. The EKF passed the drifting heading into `odom`, AMCL had to keep correcting it from the LiDAR scans, and on longer goal runs the car missed its targets. The usual fixes are known, and we did not have time for them in the last week:
+On our car the drift showed up after about 10 seconds of driving. The EKF passed the drifting heading into `odom`, AMCL had to keep correcting it from the LiDAR scans, and the goal runs missed their targets. Autonomous goal navigation on the real car is the main part of this project that we did not finish. The usual fixes are known, and we did not have time for them in the last week:
 
 - calibrate the gyro bias at rest before each run, or estimate the bias as a filter state
 - fuse only yaw rate from the IMU, not absolute yaw, and let the LiDAR scan matching anchor the heading
@@ -132,7 +132,7 @@ Background: Analog Devices, [Strapdown inertial navigation with an IMU and a geo
 
 ## docs
 
-- [docs/HK222-report.pdf](docs/HK222-report.pdf): our team report (32 pages), written by all 4 of us in Overleaf. It is rebuilt from the Overleaf source, with the page of student IDs and emails removed. The cover says "April 2022"; that is a leftover from the template, and the project ran in 2023.
+- [docs/HK222-report.pdf](docs/HK222-report.pdf): our team report (32 pages), written in Overleaf, with Mai Phương leading the writing. It is rebuilt from the Overleaf source, with the page of student IDs and emails removed. The cover says "April 2022". That date is a leftover from the template, and the project ran in 2023.
 - [docs/notes-2023.md](docs/notes-2023.md): my planning notes from 2023 (reading list, 4-step navigation plan, TF note), in English with the originals.
 
 ## known issues
