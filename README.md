@@ -2,24 +2,26 @@
 
 ![the car mapping a real home, 31 May 2023 (2x speed)](assets/slam-real-room-31may.gif)
 
-A small ROS 1 robot car, built by a team of 4 students for the Multidisciplinary Project (HK222 semester, Jan to Jun 2023) at Ho Chi Minh City University of Technology. A Raspberry Pi 4 turns `/cmd_vel` into motor PWM, counts wheel ticks into `/odom`, and publishes `/scan` from an LD19 2D LiDAR. A laptop on the same ROS master runs RViz, gmapping, an EKF, AMCL and move_base. The real car mapped a multi-room home with SLAM and localized itself in that map with AMCL. Autonomous goal navigation worked in simulation, but on the real car it was our main limitation: small heading errors from a cheap IMU added up every second, the pose drifted, and the car missed its goals (see [the limitation](#the-limitation-imu-drift-and-goal-navigation)). The clip above is the first mapping run, 31 May 2023: the car on the floor, and the map growing live on the laptop. The project was graded 9.5/10. It took 7 weeks, from my first ROS lesson to the defense (see [timeline](#timeline-7-weeks-from-zero-ros-to-the-defense)).
+A small ROS 1 robot car, built by a team of 4 students for the Multidisciplinary Project (HK222 semester, Jan to Jun 2023) at Ho Chi Minh City University of Technology. A Raspberry Pi 4 turns `/cmd_vel` into motor PWM, counts wheel ticks into `/odom`, and publishes `/scan` from an LD19 2D LiDAR. A laptop on the same ROS master runs RViz, gmapping, an EKF, AMCL and move_base. The real car mapped a multi-room home with SLAM and localized itself in that map with AMCL. Autonomous goal navigation worked in simulation, but on the real car it was our main limitation: small heading errors from a cheap IMU added up every second, the pose drifted, and the car missed its goals (see [the limitation](#the-limitation-imu-drift-and-goal-navigation)). The clip above is the first mapping run, 31 May 2023: the car on the floor, and the map growing live on the laptop. The project was graded 9.5/10. It took 11 weeks, from my first ROS tutorial to the defense (see [timeline](#timeline-11-weeks-from-zero-ros-to-the-defense)).
 
 The plan started as "plan B". We wanted to borrow a TurtleBot3. That did not work out, so we rebuilt a TurtleBot3-Burger-like robot ourselves from a borrowed Pi 4, a borrowed LD19 and cheap parts. Our instructor's first question was a good one: a TurtleBot3 already has a LiDAR, so what will you add?
 
 This is a fork of [Quoc1610/Multidisciplinary-Project---HK222](https://github.com/Quoc1610/Multidisciplinary-Project---HK222) at its 7 June 2023 snapshot. The code is unchanged. This README, `assets/` and `docs/` were added later. The commits were pushed by two teammates, Quốc ([Quoc1610](https://github.com/Quoc1610)) and Bảo ([DerpLEL](https://github.com/DerpLEL)), but the work was shared across the team, and I led it (see [team](#team)). The IMU and EKF work from the last week (8 to 11 June) was never pushed, so this snapshot does not have it (see [the limitation](#the-limitation-imu-drift-and-goal-navigation)).
 
-## timeline: 7 weeks from zero ROS to the defense
+## timeline: 11 weeks from zero ROS to the defense
 
-I started ROS from zero on 24 April 2023, the day I signed up for The Construct. The defense was on 14 June, 7 weeks later. Everything below happened in that sprint, next to our other classes and final exams.
+I had not used ROS before this project. My first step was a "learn ROS with me" tutorial series that I shared with the team on 27 March 2023. The defense was on 14 June, 11 weeks later. The real car first drove on 15 May, so all of the hardware work below fit into the last 4 weeks, around our final exams.
 
-- 24 April: signed up for The Construct and started its free Linux and Python for Robotics courses.
-- 2 May: goal navigation and obstacle avoidance running in Gazebo and RViz (the simulation clips below).
-- 11 May: paid for one month of The Construct. 11 to 16 May: the ROS Navigation course exercises (mapping, AMCL, path planning).
-- 15 May: the real car drives from `/cmd_vel`, still tethered. 23 May: keyboard drive.
+- 27 March: shared a "learn ROS with me" tutorial series with the team as our starting point.
+- 10 to 16 April: ROS in Docker would not install on the Pi's Raspbian, so we moved to Ubuntu 20.04 and ROS Noetic.
+- 24 April: signed up for The Construct and started the Gazebo simulation of our car.
+- 3 May: goal navigation and obstacle avoidance running in simulation (the clips below).
+- 11 May: paid for one month of The Construct: ROS Basics from 11 to 16 May, then ROS Navigation from 13 May to 7 June.
+- 15 May: the real car drives from `/cmd_vel`. 23 May: keyboard drive, right after our final exams (about 17 to 21 May).
 - 31 May: first SLAM map of a real home.
 - 6 June: wheel odometry and the full TF tree.
 - 10 to 11 June: IMU on an Arduino Mega, EKF fusion, gmapping of the whole home, AMCL localization in the saved map, and the first autonomous goal runs with move_base in that map. The goal runs did not reach their targets reliably, and we have no recording of them.
-- 14 June: defense, graded 9.5/10.
+- 14 June: defense. 19 June: graded 9.5/10.
 
 ## videos
 
@@ -35,11 +37,11 @@ https://github.com/user-attachments/assets/6bcce406-377d-42bd-91e8-38ab99017653
 
 https://github.com/user-attachments/assets/4e3fcb1e-cb3f-4696-a302-cf12f611de0b
 
-**Simulation, 2 May 2023 (55 s).** RViz: set the start pose, click a goal, and move_base drives there.
+**Simulation, 3 May 2023 (55 s).** RViz: set the start pose, click a goal, and move_base drives there.
 
 https://github.com/user-attachments/assets/90d085d8-1d82-41bd-a2c9-a9c433932256
 
-**Simulation, 2 May 2023 (26 s).** Obstacle avoidance with our own code on top of AMCL.
+**Simulation, 3 May 2023 (26 s).** Obstacle avoidance with our own code on top of AMCL.
 
 https://github.com/user-attachments/assets/dd295810-6b95-4230-afa0-49415f63548f
 
